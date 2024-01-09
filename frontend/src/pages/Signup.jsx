@@ -41,7 +41,7 @@ export default function Signup() {
             }
             if (data.status === true) {
                 localStorage.setItem('user', JSON.stringify(data.user));
-                Navigate('/');
+                Navigate('/setavatar');
             }
         }
     }

@@ -29,9 +29,33 @@ export default function Setavatar() {
         theme: 'dark'
 
     }
+    useEffect(() =>{
+        if(!localStorage.getItem('user')){
+            navigate('/login')
+        }
+    },[])
     const Setprofilepic = async () => {
         if (Selectedavatar === undefined){
             toast.error('Please Select Avatar', toastoptions)
+        }else{
+          try {
+              const user = await JSON.parse(localStorage.getItem('user'))
+              const {data} = await axios.post(`${setavatarroute}/${user._id}`,
+              {
+                 image: avatars[Selectedavatar]
+              });
+              console.log(data.image)
+              if(data.isSet){
+                  user.isAvatarimageset = true;
+                  user.avatarimage = data.image;
+                  localStorage.setItem('user', JSON.stringify(user));
+                  navigate('/')
+              }else{
+                  toast.error('Error setting Avatar', toastoptions)
+              }
+          } catch (error) {
+            console.log(error)
+          }
         }
     }
     useEffect(() => {
@@ -47,7 +71,6 @@ export default function Setavatar() {
                 }
             }
             setAvatars(data);
-            console.log(avatars)
             setLoading(false);
         };
         loadData()
